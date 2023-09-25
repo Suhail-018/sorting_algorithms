@@ -7,41 +7,34 @@
  *
  * @list: A pointer to a pointer to the head of the list.
  */
+
 void insertion_sort_list(listint_t **list)
 {
-listint_t *current;
+listint_t *current, *prev, *next;
 if (list == NULL || *list == NULL || (*list)->next == NULL)
 return;
 current = (*list)->next;
 while (current != NULL)
 {
-listint_t *insertion_point = current->prev;
-while (insertion_point != NULL && insertion_point->n)
+prev = current->prev;
+next = current->next;
+while (prev != NULL && current->n < prev->n)
 {
-insertion_point = insertion_point->prev;
-}
-if (insertion_point == NULL)
-{
-listint_t *temp = current->next;
-current->next = (*list);
-current->prev = NULL;
-(*list)->prev = current;
-(*list) = current;
-current = temp;
-}
-else if (insertion_point->next != current)
-{
-listint_t *temp = current->next;
-insertion_point->next->prev = current;
-current->next = insertion_point->next;
-insertion_point->next = current;
-current->prev = insertion_point;
-current = temp;
-}
+prev->next = next;
+if (next != NULL)
+next->prev = prev;
+current->prev = prev->prev;
+current->next = prev;
+if (prev->prev != NULL)
+prev->prev->next = current;
 else
-{
-current = current->next;
-}
+*list = current;
+prev->prev = current;
+
 print_list(*list);
+prev = current->prev;
+next = current->next;
+}
+current = next;
 }
 }

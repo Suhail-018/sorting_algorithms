@@ -1,69 +1,74 @@
 #include "sort.h"
-#include <stdio.h>
 
 /**
- * lomuto_partition - Partitions an array using the Lomuto scheme
+ * partition - Partitions an array using the Lomuto scheme
+ * @array: The array to partition
+ * @low: The lowest index of the partition
+ * @high: The highest index of the partition
+ * @size: The size of the array
  *
- * @array: The array to be partitioned
- * @size: Number of elements in @array
- * @low: The starting index of the partition
- * @high: The ending index of the partition
- *
- * Return: Index of the pivot element after partitioning
+ * Return: The final index of the pivot
  */
-int lomuto_partition(int *array, size_t size, int low, int high)
+int partition(int *array, int low, int high, size_t size)
 {
-int pivot;
-int j;
-int i;
-int temp;
-i = low - 1;
-pivot = array[high];
-for (j = low; j <= high - 1; j++)
-{
-if (array[j] <= pivot)
-{
-i++;
-temp = array[i];
-array[i] = array[j];
-array[j] = temp;
-print_array(array, size);
-}
-}
-temp = array[i + 1];
-array[i + 1] = array[high];
-array[high] = temp;
-print_array(array, size);
-return (i + 1);
+    int pivot, i, j, tmp;
+
+    pivot = array[high]; /* The pivot is always the last element */
+    i = low - 1; /* The index of the smaller element */
+    for (j = low; j <= high - 1; j++)
+    {
+        /* If the current element is smaller than the pivot */
+        if (array[j] < pivot) /* This is the correct condition */
+        {
+            i++; /* Increment the index of the smaller element */
+            /* Swap array[i] and array[j] */
+            tmp = array[i];
+            array[i] = array[j];
+            array[j] = tmp;
+            /* Print the array after each swap */
+            print_array(array, size);
+        }
+    }
+    /* Swap array[i + 1] and array[high] (the pivot) */
+    tmp = array[i + 1];
+    array[i + 1] = array[high];
+    array[high] = tmp;
+    /* Print the array after the final swap */
+    print_array(array, size);
+    return (i + 1); /* Return the final index of the pivot */
 }
 
 /**
- * quicksort_recursive - Recursively sorts an array using Quick Sort
- *
- * @array: The array to be sorted
- * @size: Number of elements in @array
- * @low: The starting index of the subarray
- * @high: The ending index of the subarray
+ * quick_sort_helper - Recursively sorts an array using the Quick sort algorithm
+ * @array: The array to sort
+ * @low: The lowest index of the partition to sort
+ * @high: The highest index of the partition to sort
+ * @size: The size of the array
  */
-void quicksort_recursive(int *array, size_t size, int low, int high)
+void quick_sort_helper(int *array, int low, int high, size_t size)
 {
-if (low < high)
-{
-int pivot_index = lomuto_partition(array, size, low, high);
-quicksort_recursive(array, size, low, pivot_index - 1);
-quicksort_recursive(array, size, pivot_index + 1, high);
+    int pi;
+
+    if (low < high)
+    {
+        /* Partition the array and get the final index of the pivot */
+        pi = partition(array, low, high, size);
+        /* Recursively sort the left and right partitions */
+        quick_sort_helper(array, low, pi - 1, size);
+        quick_sort_helper(array, pi + 1, high, size);
+    }
 }
-}
+
 /**
- * quick_sort - Sorts an array of integers in ascending order using Quick Sort
- *
- * @array: The array to be sorted
- * @size: Number of elements in @array
+ * quick_sort - Sorts an array of integers in ascending order using Quick sort
+ * @array: The array to sort
+ * @size: The size of the array
  */
 void quick_sort(int *array, size_t size)
 {
-if (array == NULL || size < 2)
-return;
-quicksort_recursive(array, size, 0, size - 1);
-}
+    if (array == NULL || size < 2)
+        return;
 
+    /* Call the helper function with low = 0 and high = size - 1 */
+    quick_sort_helper(array, 0, size - 1, size);
+}
