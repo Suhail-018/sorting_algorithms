@@ -15,7 +15,7 @@ if (array == NULL || size < 2)
 return;
 for (i = 0; i < size - 1; i++)
 {
-min_index = i;	
+min_index = i;
 for (j = i + 1; j < size; j++)
 {
 if (array[j] < array[min_index])
